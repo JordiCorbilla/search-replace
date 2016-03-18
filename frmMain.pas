@@ -36,14 +36,23 @@ uses
 type
   TForm1 = class(TForm)
     btnSearch: TButton;
-    ListFiles: TListView;
     edtExtension: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     edtLocation: TEdit;
     btnLocation: TButton;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    Content: TTabSheet;
+    ListFiles: TListView;
+    btnReplace: TButton;
+    edtOldText: TEdit;
+    Label3: TLabel;
+    Label4: TLabel;
+    edtNewText: TEdit;
     procedure btnLocationClick(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
+    procedure btnReplaceClick(Sender: TObject);
   private
     procedure SearchAllFilesUnderDirectory(const Folder: string);
     { Private declarations }
@@ -80,6 +89,29 @@ begin
     finally
       FindClose(searchRecord);
     end;
+end;
+
+procedure TForm1.btnReplaceClick(Sender: TObject);
+var
+  fileList : TStringlist;
+  i: Integer;
+begin
+  for i := 0 to ListFiles.Items.Count-1 do
+  begin
+    fileList := TStringlist.Create;
+    try
+      try
+        fileList.LoadFromFile(ListFiles.Items[i].Caption);
+        fileList.Text := StringReplace(fileList.Text,edtOldText.text,edtNewText.text,[rfReplaceAll, rfIgnoreCase]);
+        fileList.SaveToFile(ListFiles.Items[i].Caption);
+        ListFiles.Items[i].SubItems.Add('Completed');
+      finally
+        fileList.Free;
+      end;
+    except on e: exception do
+      ListFiles.Items[i].SubItems.Add(e.Message);
+    end;
+  end;
 end;
 
 procedure TForm1.btnSearchClick(Sender: TObject);
