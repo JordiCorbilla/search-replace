@@ -3276,7 +3276,7 @@ object Form1: TForm1
     Top = 50
     Width = 1098
     Height = 570
-    ActivePage = TabSheet1
+    ActivePage = Content
     Align = alClient
     TabOrder = 0
     ExplicitLeft = 694
@@ -3306,6 +3306,7 @@ object Form1: TForm1
           end>
         TabOrder = 0
         ViewStyle = vsReport
+        OnAdvancedCustomDrawSubItem = ListFilesAdvancedCustomDrawSubItem
         ExplicitLeft = 640
         ExplicitTop = 21
         ExplicitWidth = 454
@@ -3466,7 +3467,7 @@ object Form1: TForm1
           Height = 32
           Caption = 'Delete Folder'
           TabOrder = 0
-          OnClick = btnReplaceClick
+          OnClick = btnDeleteFolderClick
         end
         object btnLocateFolder: TButton
           Left = 327
