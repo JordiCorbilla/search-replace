@@ -350,9 +350,7 @@ end;
 
 procedure TForm1.btnDeleteFilesClick(Sender: TObject);
 var
-  fileList: TStringlist;
   i: Integer;
-  previous : string;
 begin
   ActivityIndicator4.Animate := true;
   ListFiles.OnAdvancedCustomDrawSubItem := nil;
