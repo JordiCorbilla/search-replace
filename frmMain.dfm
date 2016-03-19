@@ -3276,7 +3276,7 @@ object Form1: TForm1
     Top = 50
     Width = 1098
     Height = 570
-    ActivePage = Content
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     ExplicitLeft = 694
@@ -3397,7 +3397,7 @@ object Form1: TForm1
         object edtExtension: TEdit
           Left = 105
           Top = 52
-          Width = 54
+          Width = 120
           Height = 21
           TabOrder = 5
           Text = '*.*'
@@ -3420,6 +3420,21 @@ object Form1: TForm1
         object ActivityIndicator2: TActivityIndicator
           Left = 82
           Top = 83
+          IndicatorColor = aicWhite
+          IndicatorType = aitSectorRing
+        end
+        object btnDeleteFiles: TButton
+          Left = 6
+          Top = 305
+          Width = 75
+          Height = 32
+          Caption = 'Delete Files'
+          TabOrder = 9
+          OnClick = btnDeleteFilesClick
+        end
+        object ActivityIndicator4: TActivityIndicator
+          Left = 82
+          Top = 305
           IndicatorColor = aicWhite
           IndicatorType = aitSectorRing
         end

@@ -78,6 +78,8 @@ type
     ActivityIndicator2: TActivityIndicator;
     ActivityIndicator3: TActivityIndicator;
     Label8: TLabel;
+    btnDeleteFiles: TButton;
+    ActivityIndicator4: TActivityIndicator;
     procedure btnLocationClick(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
     procedure btnReplaceClick(Sender: TObject);
@@ -92,6 +94,7 @@ type
     procedure btnDeleteFolderClick(Sender: TObject);
     procedure ListEmptyFoldersAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
     procedure btnPopulateFolderClick(Sender: TObject);
+    procedure btnDeleteFilesClick(Sender: TObject);
   private
     procedure SearchAllFilesUnderDirectory(const Folder: string);
     procedure SearchEmptyFoldersUnderDirectory(const Folder: string);
@@ -215,7 +218,7 @@ begin
   begin
     if Item.SubItems.Count > 0 then
     begin
-      if (Item.SubItems.Strings[0] = 'Changed') then
+      if (Item.SubItems.Strings[0] = 'Changed') or (Item.SubItems.Strings[0] = 'Deleted') then
       begin
         Sender.Canvas.Font.color := clGreen;
         Sender.Canvas.Brush.color := Color2;
@@ -343,6 +346,33 @@ end;
 procedure TForm1.actSettingsExecute(Sender: TObject);
 begin
   PageControl1.TabIndex := 2;
+end;
+
+procedure TForm1.btnDeleteFilesClick(Sender: TObject);
+var
+  fileList: TStringlist;
+  i: Integer;
+  previous : string;
+begin
+  ActivityIndicator4.Animate := true;
+  ListFiles.OnAdvancedCustomDrawSubItem := nil;
+  application.ProcessMessages;
+  for i := 0 to ListFiles.Items.Count - 1 do
+  begin
+    try
+      application.ProcessMessages;
+      if DeleteFile(ListFiles.Items[i].Caption) then
+        ListFiles.Items[i].SubItems.Add('Deleted')
+      else
+        ListFiles.Items[i].SubItems.Add('Processed');
+    except
+      on e: exception do
+        ListFiles.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListFiles.OnAdvancedCustomDrawSubItem := ListFilesAdvancedCustomDrawSubItem;
+  ActivityIndicator4.Animate := false;
+  showMessage('Operation completed!');
 end;
 
 procedure TForm1.btnDeleteFolderClick(Sender: TObject);
