@@ -31,7 +31,9 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.StdCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.StdCtrls,
+  Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.CategoryButtons, System.Actions,
+  Vcl.ActnList, Vcl.WinXCtrls, System.ImageList, Vcl.ImgList;
 
 type
   TForm1 = class(TForm)
@@ -50,6 +52,18 @@ type
     Label3: TLabel;
     Label4: TLabel;
     edtNewText: TEdit;
+    StatusBar1: TStatusBar;
+    pnlToolbar: TPanel;
+    mainMenu: TImage;
+    SV: TSplitView;
+    ActionList1: TActionList;
+    actSearchReplace: TAction;
+    actSearchEmpty: TAction;
+    actSettings: TAction;
+    catMenuItems: TCategoryButtons;
+    imgMenu: TImageList;
+    Panel1: TPanel;
+    TabSheet2: TTabSheet;
     procedure btnLocationClick(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
     procedure btnReplaceClick(Sender: TObject);
