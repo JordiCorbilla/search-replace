@@ -132,6 +132,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="flickr.lib.folder.pas"/>
+        <DCCReference Include="thundax.lib.settings.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

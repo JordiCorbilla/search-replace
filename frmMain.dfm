@@ -3267,85 +3267,34 @@ object Form1: TForm1
     FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
     FFFFFFFF}
   OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    Left = 344
-    Top = 195
-    Width = 95
-    Height = 13
-    Caption = 'File name extension'
-  end
-  object Label2: TLabel
-    Left = 344
-    Top = 143
-    Width = 109
-    Height = 13
-    Caption = 'Select Location Folder:'
-  end
-  object Label3: TLabel
-    Left = 344
-    Top = 283
-    Width = 45
-    Height = 13
-    Caption = 'Old Text:'
-  end
-  object Label4: TLabel
-    Left = 344
-    Top = 327
-    Width = 50
-    Height = 13
-    Caption = 'New Text:'
-  end
-  object btnSearch: TButton
-    Left = 344
-    Top = 223
-    Width = 75
-    Height = 25
-    Caption = 'Search'
-    TabOrder = 0
-    OnClick = btnSearchClick
-  end
-  object edtExtension: TEdit
-    Left = 443
-    Top = 192
-    Width = 54
-    Height = 21
-    TabOrder = 1
-    Text = '*.*'
-  end
-  object edtLocation: TEdit
-    Left = 344
-    Top = 162
-    Width = 321
-    Height = 21
-    TabOrder = 2
-  end
-  object btnLocation: TButton
-    Left = 665
-    Top = 162
-    Width = 23
-    Height = 21
-    Caption = '...'
-    TabOrder = 3
-    OnClick = btnLocationClick
-  end
   object PageControl1: TPageControl
-    Left = 694
-    Top = 80
-    Width = 538
-    Height = 442
-    ActivePage = TabSheet2
-    TabOrder = 4
+    Left = 200
+    Top = 50
+    Width = 1098
+    Height = 570
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 0
+    ExplicitLeft = 694
+    ExplicitTop = 80
+    ExplicitWidth = 538
+    ExplicitHeight = 442
     object TabSheet1: TTabSheet
       Caption = 'Search/Replace'
       ExplicitLeft = 12
       ExplicitTop = 80
+      ExplicitWidth = 530
+      ExplicitHeight = 414
       object ListFiles: TListView
-        Left = 467
-        Top = 21
-        Width = 627
-        Height = 521
+        Left = 361
+        Top = 0
+        Width = 729
+        Height = 542
+        Align = alClient
         Columns = <
           item
             Caption = 'Files'
@@ -3357,14 +3306,122 @@ object Form1: TForm1
           end>
         TabOrder = 0
         ViewStyle = vsReport
+        ExplicitLeft = 640
+        ExplicitTop = 21
+        ExplicitWidth = 454
+        ExplicitHeight = 521
       end
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 425
-        Height = 414
+        Width = 361
+        Height = 542
         Align = alLeft
         TabOrder = 1
+        ExplicitHeight = 523
+        object Label2: TLabel
+          Left = 6
+          Top = 3
+          Width = 109
+          Height = 13
+          Caption = 'Select Location Folder:'
+        end
+        object Label4: TLabel
+          Left = 6
+          Top = 187
+          Width = 50
+          Height = 13
+          Caption = 'New Text:'
+        end
+        object Label3: TLabel
+          Left = 6
+          Top = 143
+          Width = 45
+          Height = 13
+          Caption = 'Old Text:'
+        end
+        object Label1: TLabel
+          Left = 6
+          Top = 55
+          Width = 95
+          Height = 13
+          Caption = 'File name extension'
+        end
+        object Label5: TLabel
+          Left = 118
+          Top = 91
+          Width = 110
+          Height = 13
+          Caption = 'Number of files found: '
+        end
+        object edtNewText: TEdit
+          Left = 6
+          Top = 206
+          Width = 321
+          Height = 21
+          TabOrder = 0
+        end
+        object edtOldText: TEdit
+          Left = 6
+          Top = 162
+          Width = 321
+          Height = 21
+          TabOrder = 1
+        end
+        object btnReplace: TButton
+          Left = 6
+          Top = 233
+          Width = 75
+          Height = 32
+          Caption = 'Replace'
+          TabOrder = 2
+          OnClick = btnReplaceClick
+        end
+        object btnLocation: TButton
+          Left = 327
+          Top = 22
+          Width = 23
+          Height = 21
+          Caption = '...'
+          TabOrder = 3
+          OnClick = btnLocationClick
+        end
+        object edtLocation: TEdit
+          Left = 6
+          Top = 22
+          Width = 321
+          Height = 21
+          TabOrder = 4
+        end
+        object edtExtension: TEdit
+          Left = 105
+          Top = 52
+          Width = 54
+          Height = 21
+          TabOrder = 5
+          Text = '*.*'
+        end
+        object btnSearch: TButton
+          Left = 6
+          Top = 83
+          Width = 75
+          Height = 32
+          Caption = 'Search'
+          TabOrder = 6
+          OnClick = btnSearchClick
+        end
+        object ActivityIndicator1: TActivityIndicator
+          Left = 82
+          Top = 233
+          IndicatorColor = aicWhite
+          IndicatorType = aitSectorRing
+        end
+        object ActivityIndicator2: TActivityIndicator
+          Left = 82
+          Top = 83
+          IndicatorColor = aicWhite
+          IndicatorType = aitSectorRing
+        end
       end
     end
     object Content: TTabSheet
@@ -3372,47 +3429,126 @@ object Form1: TForm1
       ImageIndex = 1
       ExplicitWidth = 923
       ExplicitHeight = 566
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 361
+        Height = 542
+        Align = alLeft
+        TabOrder = 0
+        ExplicitLeft = 8
+        ExplicitHeight = 523
+        object Label6: TLabel
+          Left = 6
+          Top = 3
+          Width = 109
+          Height = 13
+          Caption = 'Select Location Folder:'
+        end
+        object Label7: TLabel
+          Left = 6
+          Top = 102
+          Width = 123
+          Height = 13
+          Caption = 'Actions on empty folders:'
+        end
+        object Label8: TLabel
+          Left = 117
+          Top = 57
+          Width = 110
+          Height = 13
+          Caption = 'Number of files found: '
+        end
+        object btnDeleteFolder: TButton
+          Left = 6
+          Top = 121
+          Width = 75
+          Height = 32
+          Caption = 'Delete Folder'
+          TabOrder = 0
+          OnClick = btnReplaceClick
+        end
+        object btnLocateFolder: TButton
+          Left = 327
+          Top = 22
+          Width = 23
+          Height = 21
+          Caption = '...'
+          TabOrder = 1
+          OnClick = btnLocateFolderClick
+        end
+        object edtFolder: TEdit
+          Left = 6
+          Top = 22
+          Width = 321
+          Height = 21
+          TabOrder = 2
+        end
+        object btnSearchEmpty: TButton
+          Left = 6
+          Top = 49
+          Width = 75
+          Height = 32
+          Caption = 'Search'
+          TabOrder = 3
+          OnClick = btnSearchEmptyClick
+        end
+        object btnPopulateFolder: TButton
+          Left = 87
+          Top = 121
+          Width = 90
+          Height = 32
+          Caption = 'Populate Folder'
+          TabOrder = 4
+          OnClick = btnReplaceClick
+        end
+        object ActivityIndicator3: TActivityIndicator
+          Left = 81
+          Top = 49
+          IndicatorColor = aicWhite
+          IndicatorType = aitSectorRing
+        end
+      end
+      object ListEmptyFolders: TListView
+        Left = 361
+        Top = 0
+        Width = 729
+        Height = 542
+        Align = alClient
+        Columns = <
+          item
+            Caption = 'Files'
+            Width = 500
+          end
+          item
+            Caption = 'Log'
+            Width = 400
+          end>
+        TabOrder = 1
+        ViewStyle = vsReport
+        ExplicitLeft = 640
+        ExplicitTop = 21
+        ExplicitWidth = 454
+        ExplicitHeight = 521
+      end
     end
     object TabSheet2: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
+      ExplicitLeft = 100
+      ExplicitTop = 56
+      ExplicitHeight = 523
+      object chkDetails: TCheckBox
+        Left = 11
+        Top = 16
+        Width = 137
+        Height = 17
+        Caption = 'Keep Details'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+      end
     end
-  end
-  object btnReplace: TButton
-    Left = 344
-    Top = 373
-    Width = 75
-    Height = 25
-    Caption = 'Replace'
-    TabOrder = 5
-    OnClick = btnReplaceClick
-  end
-  object edtOldText: TEdit
-    Left = 344
-    Top = 302
-    Width = 321
-    Height = 21
-    TabOrder = 6
-  end
-  object edtNewText: TEdit
-    Left = 344
-    Top = 346
-    Width = 321
-    Height = 21
-    TabOrder = 7
-  end
-  object StatusBar1: TStatusBar
-    Left = 0
-    Top = 601
-    Width = 1298
-    Height = 19
-    Panels = <
-      item
-        Width = 200
-      end>
-    ExplicitLeft = 168
-    ExplicitTop = 392
-    ExplicitWidth = 0
   end
   object pnlToolbar: TPanel
     Left = 0
@@ -3423,7 +3559,7 @@ object Form1: TForm1
     BevelOuter = bvNone
     Color = 12477460
     ParentBackground = False
-    TabOrder = 9
+    TabOrder = 1
     ExplicitLeft = 8
     ExplicitTop = 8
     ExplicitWidth = 671
@@ -3442,17 +3578,18 @@ object Form1: TForm1
         6F440508A8FC4C3C006BFE2C7CF425203CE0EB277D7B2F01F101D6690F005F41
         02E000EBB40780AF200170807512101FE09D1000E471BA57C048D779DE39972F
         3AE500AEDA14143A21612F0000000049454E44AE426082}
+      OnClick = mainMenuClick
     end
   end
-  object SV: TSplitView
+  object splitview: TSplitView
     Left = 0
     Top = 50
     Width = 200
-    Height = 551
+    Height = 570
     Color = clBlack
     OpenedWidth = 200
     Placement = svpLeft
-    TabOrder = 10
+    TabOrder = 2
     ExplicitHeight = 383
     object catMenuItems: TCategoryButtons
       Left = 0
@@ -3492,27 +3629,30 @@ object Form1: TForm1
     end
   end
   object ActionList1: TActionList
-    Left = 256
-    Top = 244
+    Left = 80
+    Top = 204
     object actSearchReplace: TAction
       Caption = 'Search Replace'
       ImageIndex = 1
+      OnExecute = actSearchReplaceExecute
     end
     object actSearchEmpty: TAction
       Caption = 'Search Empty Folders'
       ImageIndex = 2
+      OnExecute = actSearchEmptyExecute
     end
     object actSettings: TAction
       Caption = 'Settings'
       ImageIndex = 3
+      OnExecute = actSettingsExecute
     end
   end
   object imgMenu: TImageList
     ColorDepth = cd32Bit
     Height = 32
     Width = 32
-    Left = 256
-    Top = 388
+    Left = 80
+    Top = 268
     Bitmap = {
       494C01010400BC00D00020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000004000000001002000000000000080

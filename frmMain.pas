@@ -37,25 +37,13 @@ uses
 
 type
   TForm1 = class(TForm)
-    btnSearch: TButton;
-    edtExtension: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    edtLocation: TEdit;
-    btnLocation: TButton;
     PageControl1: TPageControl;
     TabSheet1: TTabSheet;
     Content: TTabSheet;
     ListFiles: TListView;
-    btnReplace: TButton;
-    edtOldText: TEdit;
-    Label3: TLabel;
-    Label4: TLabel;
-    edtNewText: TEdit;
-    StatusBar1: TStatusBar;
     pnlToolbar: TPanel;
     mainMenu: TImage;
-    SV: TSplitView;
+    splitview: TSplitView;
     ActionList1: TActionList;
     actSearchReplace: TAction;
     actSearchEmpty: TAction;
@@ -64,11 +52,46 @@ type
     imgMenu: TImageList;
     Panel1: TPanel;
     TabSheet2: TTabSheet;
+    Label2: TLabel;
+    edtNewText: TEdit;
+    edtOldText: TEdit;
+    btnReplace: TButton;
+    btnLocation: TButton;
+    edtLocation: TEdit;
+    edtExtension: TEdit;
+    btnSearch: TButton;
+    Label4: TLabel;
+    Label3: TLabel;
+    Label1: TLabel;
+    Panel2: TPanel;
+    Label6: TLabel;
+    btnDeleteFolder: TButton;
+    btnLocateFolder: TButton;
+    edtFolder: TEdit;
+    btnSearchEmpty: TButton;
+    ListEmptyFolders: TListView;
+    btnPopulateFolder: TButton;
+    Label7: TLabel;
+    chkDetails: TCheckBox;
+    Label5: TLabel;
+    ActivityIndicator1: TActivityIndicator;
+    ActivityIndicator2: TActivityIndicator;
+    ActivityIndicator3: TActivityIndicator;
+    Label8: TLabel;
     procedure btnLocationClick(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
     procedure btnReplaceClick(Sender: TObject);
+    procedure mainMenuClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure actSearchReplaceExecute(Sender: TObject);
+    procedure actSearchEmptyExecute(Sender: TObject);
+    procedure actSettingsExecute(Sender: TObject);
+    procedure btnLocateFolderClick(Sender: TObject);
+    procedure btnSearchEmptyClick(Sender: TObject);
   private
     procedure SearchAllFilesUnderDirectory(const Folder: string);
+    procedure SearchEmptyFoldersUnderDirectory(const Folder: string);
+    function IsDirectoryEmpty(const directory: string): boolean;
     { Private declarations }
   public
     { Public declarations }
@@ -80,62 +103,180 @@ var
 implementation
 
 uses
-  flickr.lib.folder;
+  flickr.lib.Folder;
 
 {$R *.dfm}
 
 procedure TForm1.SearchAllFilesUnderDirectory(const Folder: string);
 var
   searchRecord: TSearchRec;
-  item : TListItem;
+  item: TListItem;
 begin
-  if FindFirst(IncludeTrailingBackslash(Folder) + edtExtension.text, faAnyFile or faDirectory, searchRecord) = 0 then
+  if FindFirst(IncludeTrailingPathDelimiter(Folder) + edtExtension.text, faAnyFile or faDirectory, searchRecord) = 0 then
     try
       repeat
+      begin
+        Application.ProcessMessages;
         if (searchRecord.Attr and faDirectory) = 0 then
         begin
           item := ListFiles.Items.Add;
-          item.Caption := (IncludeTrailingBackslash(Folder) + searchRecord.Name)
+          item.Caption := (IncludeTrailingPathDelimiter(Folder) + searchRecord.Name)
         end
         else if (searchRecord.Name <> '.') and (searchRecord.Name <> '..') then
-          SearchAllFilesUnderDirectory(IncludeTrailingBackslash(Folder) + searchRecord.Name);
+          SearchAllFilesUnderDirectory(IncludeTrailingPathDelimiter(Folder) + searchRecord.Name);
+      end;
       until FindNext(searchRecord) <> 0;
     finally
       FindClose(searchRecord);
     end;
 end;
 
+procedure TForm1.SearchEmptyFoldersUnderDirectory(const Folder: string);
+var
+  findData: TWin32FindData;
+  handle: THandle;
+  fileName: string;
+  item: TListItem;
+begin
+  fileName := IncludeTrailingPathDelimiter(Folder);
+  handle := FindFirstFile(PChar(fileName + '*.*'), findData);
+  if handle <> INVALID_HANDLE_VALUE then
+    try
+      repeat
+      begin
+        application.ProcessMessages;
+        if (findData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY > 0) and (Pos(findData.cFileName, '.;..') = 0) then
+        begin
+          if IsDirectoryEmpty(fileName + findData.cFileName) then
+          begin
+            item := ListEmptyFolders.Items.Add;
+            item.Caption := (fileName + findData.cFileName);
+          end;
+          SearchEmptyFoldersUnderDirectory(fileName + findData.cFileName);
+        end;
+      end;
+      until not FindNextFile(handle, findData);
+    finally
+      Winapi.Windows.FindClose(handle);
+    end;
+end;
+
+function TForm1.IsDirectoryEmpty(const directory: string): boolean;
+var
+  searchRec: TSearchRec;
+begin
+  try
+    result := (FindFirst(directory + '\*.*', faAnyFile, searchRec) = 0) AND (FindNext(searchRec) = 0) AND (FindNext(searchRec) <> 0);
+  finally
+    FindClose(searchRec);
+  end;
+end;
+
 procedure TForm1.btnReplaceClick(Sender: TObject);
 var
-  fileList : TStringlist;
+  fileList: TStringlist;
   i: Integer;
+  previous : string;
 begin
-  for i := 0 to ListFiles.Items.Count-1 do
+  ActivityIndicator1.Animate := true;
+  application.ProcessMessages;
+  for i := 0 to ListFiles.Items.Count - 1 do
   begin
     fileList := TStringlist.Create;
     try
       try
+        application.ProcessMessages;
         fileList.LoadFromFile(ListFiles.Items[i].Caption);
-        fileList.Text := StringReplace(fileList.Text,edtOldText.text,edtNewText.text,[rfReplaceAll, rfIgnoreCase]);
+        previous := fileList.text;
+        fileList.text := StringReplace(fileList.text, edtOldText.text, edtNewText.text, [rfReplaceAll, rfIgnoreCase]);
         fileList.SaveToFile(ListFiles.Items[i].Caption);
-        ListFiles.Items[i].SubItems.Add('Completed');
+        if previous <> fileList.text then
+          ListFiles.Items[i].SubItems.Add('Changed')
+        else
+          ListFiles.Items[i].SubItems.Add('Processed');
       finally
         fileList.Free;
       end;
-    except on e: exception do
-      ListFiles.Items[i].SubItems.Add(e.Message);
+    except
+      on e: exception do
+        ListFiles.Items[i].SubItems.Add('Error ' + e.Message);
     end;
   end;
+  ActivityIndicator1.Animate := false;
 end;
 
 procedure TForm1.btnSearchClick(Sender: TObject);
 begin
+  if edtLocation.text = '' then
+  begin
+    showMessage('Location folder cannot be empty!');
+    exit;
+  end;
+  if edtExtension.text = '' then
+  begin
+    showMessage('Extension cannot be empty!');
+    exit;
+  end;
+  ListFiles.Clear;
+  ActivityIndicator2.Animate := true;
+  Application.ProcessMessages;
   SearchAllFilesUnderDirectory(edtLocation.text);
+  label5.Caption := 'Number of files found: ' + ListFiles.Items.Count.ToString;
+  ActivityIndicator2.Animate := false;
+end;
+
+procedure TForm1.btnSearchEmptyClick(Sender: TObject);
+begin
+  if edtFolder.text = '' then
+  begin
+    showMessage('Location folder cannot be empty!');
+    exit;
+  end;
+  ActivityIndicator3.Animate := true;
+  application.ProcessMessages;
+  ListEmptyFolders.Clear;
+  SearchEmptyFoldersUnderDirectory(edtFolder.text);
+  ActivityIndicator3.Animate := false;
+  label8.Caption := 'Number of files found: ' + ListEmptyFolders.Items.Count.ToString;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  PageControl1.TabIndex := 0;
+  splitview.Close;
+end;
+
+procedure TForm1.mainMenuClick(Sender: TObject);
+begin
+  if splitview.Opened then
+    splitview.Close
+  else
+    splitview.Open;
+end;
+
+procedure TForm1.actSearchEmptyExecute(Sender: TObject);
+begin
+  PageControl1.TabIndex := 1;
+end;
+
+procedure TForm1.actSearchReplaceExecute(Sender: TObject);
+begin
+  PageControl1.TabIndex := 0;
+end;
+
+procedure TForm1.actSettingsExecute(Sender: TObject);
+begin
+  PageControl1.TabIndex := 2;
+end;
+
+procedure TForm1.btnLocateFolderClick(Sender: TObject);
+begin
+  edtFolder.text := TFolder.BrowseForFolder;
 end;
 
 procedure TForm1.btnLocationClick(Sender: TObject);
 begin
-   edtLocation.text := TFolder.BrowseForFolder;
+  edtLocation.text := TFolder.BrowseForFolder;
 end;
 
 end.
