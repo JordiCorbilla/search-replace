@@ -3,7 +3,7 @@ A small utility to search and replace over multiple files
 
 Download the latest version here:
 
-[![Downloads](https://img.shields.io/badge/downloads-blue.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh) [![Stable Release](https://img.shields.io/badge/version-1.0-blue.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh) [![Delphi version](https://img.shields.io/badge/delphi-10Seattle-red.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh)
+[![Downloads](https://img.shields.io/badge/downloads-0-blue.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh) [![Stable Release](https://img.shields.io/badge/version-1.0-blue.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh) [![Delphi version](https://img.shields.io/badge/delphi-10Seattle-red.svg)](https://app.box.com/s/gww9193ay627xzv3h9h1umrp501qjmzh)
 
 **Example of the app**:
 
