@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 'Search Replace'
+  Caption = 'Search - Replace'
   ClientHeight = 620
   ClientWidth = 1298
   Color = clBtnFace
@@ -3501,7 +3501,7 @@ object Form1: TForm1
           Height = 32
           Caption = 'Populate Folder'
           TabOrder = 4
-          OnClick = btnReplaceClick
+          OnClick = btnPopulateFolderClick
         end
         object ActivityIndicator3: TActivityIndicator
           Left = 81
@@ -3527,10 +3527,8 @@ object Form1: TForm1
           end>
         TabOrder = 1
         ViewStyle = vsReport
-        ExplicitLeft = 640
-        ExplicitTop = 21
-        ExplicitWidth = 454
-        ExplicitHeight = 521
+        OnAdvancedCustomDrawSubItem = ListEmptyFoldersAdvancedCustomDrawSubItem
+        ExplicitLeft = 356
       end
     end
     object TabSheet2: TTabSheet

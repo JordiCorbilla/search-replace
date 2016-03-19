@@ -90,6 +90,8 @@ type
     procedure btnSearchEmptyClick(Sender: TObject);
     procedure ListFilesAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
     procedure btnDeleteFolderClick(Sender: TObject);
+    procedure ListEmptyFoldersAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+    procedure btnPopulateFolderClick(Sender: TObject);
   private
     procedure SearchAllFilesUnderDirectory(const Folder: string);
     procedure SearchEmptyFoldersUnderDirectory(const Folder: string);
@@ -174,6 +176,35 @@ begin
   end;
 end;
 
+procedure TForm1.ListEmptyFoldersAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+var
+  color, Color2: TColor;
+begin
+  color := Sender.Canvas.Font.color;
+  Color2 := Sender.Canvas.Brush.color;
+  if SubItem = 1 then
+  begin
+    if Item.SubItems.Count > 0 then
+    begin
+      if (Item.SubItems.Strings[0] = 'Deleted') or (Item.SubItems.Strings[0] = 'Populated') then
+      begin
+        Sender.Canvas.Font.color := clGreen;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+      if (Item.SubItems.Strings[0].Contains('Error')) then
+      begin
+        Sender.Canvas.Font.color := clRed;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+    end;
+  end
+  else
+  begin
+    Sender.Canvas.Font.color := color;
+    Sender.Canvas.Brush.color := Color2;
+  end;
+end;
+
 procedure TForm1.ListFilesAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
 var
   color, Color2: TColor;
@@ -182,20 +213,23 @@ begin
   Color2 := Sender.Canvas.Brush.color;
   if SubItem = 1 then
   begin
-    if (Item.SubItems.Strings[0] = 'Changed') then
+    if Item.SubItems.Count > 0 then
     begin
-      Sender.Canvas.Font.color := clGreen;
-      Sender.Canvas.Brush.color := Color2;
-    end;
-    if (Item.SubItems.Strings[0] = 'Processed') then
-    begin
-      Sender.Canvas.Font.color := clYellow;
-      Sender.Canvas.Brush.color := Color2;
-    end;
-    if (Item.SubItems.Strings[0].Contains('Error')) then
-    begin
-      Sender.Canvas.Font.color := clRed;
-      Sender.Canvas.Brush.color := Color2;
+      if (Item.SubItems.Strings[0] = 'Changed') then
+      begin
+        Sender.Canvas.Font.color := clGreen;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+      if (Item.SubItems.Strings[0] = 'Processed') then
+      begin
+        Sender.Canvas.Font.color := clBlue;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+      if (Item.SubItems.Strings[0].Contains('Error')) then
+      begin
+        Sender.Canvas.Font.color := clRed;
+        Sender.Canvas.Brush.color := Color2;
+      end;
     end;
   end
   else
@@ -273,11 +307,13 @@ begin
   end;
   ActivityIndicator3.Animate := true;
   application.ProcessMessages;
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := nil;
   ListEmptyFolders.Clear;
   SearchEmptyFoldersUnderDirectory(edtFolder.text);
   ActivityIndicator3.Animate := false;
   label8.Caption := 'Number of files found: ' + ListEmptyFolders.Items.Count.ToString;
   showMessage('Operation completed!');
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := ListEmptyFoldersAdvancedCustomDrawSubItem;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -313,10 +349,19 @@ procedure TForm1.btnDeleteFolderClick(Sender: TObject);
 var
   i : integer;
 begin
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := nil;
   for i := 0 to ListEmptyFolders.Items.Count - 1 do
   begin
-    RemoveDir(ListEmptyFolders.Items[i].Caption);
+    try
+      if RemoveDir(ListEmptyFolders.Items[i].Caption) then
+      begin
+        ListEmptyFolders.Items[i].SubItems.Add('Deleted')
+      end;
+    except on e: exception do
+      ListEmptyFolders.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
   end;
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := ListEmptyFoldersAdvancedCustomDrawSubItem;
 end;
 
 procedure TForm1.btnLocateFolderClick(Sender: TObject);
@@ -327,6 +372,30 @@ end;
 procedure TForm1.btnLocationClick(Sender: TObject);
 begin
   edtLocation.text := TFolder.BrowseForFolder;
+end;
+
+procedure TForm1.btnPopulateFolderClick(Sender: TObject);
+var
+  i : integer;
+  emptyFile : TStringList;
+begin
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := nil;
+  for i := 0 to ListEmptyFolders.Items.Count - 1 do
+  begin
+    try
+      emptyFile := TStringList.Create;
+      try
+        emptyFile.Add('This is an empty file created by a machine!');
+        emptyFile.SaveToFile(IncludeTrailingPathDelimiter(ListEmptyFolders.Items[i].Caption) + '_empty.txt');
+        ListEmptyFolders.Items[i].SubItems.Add('Populated');
+      finally
+        emptyFile.Free;
+      end;
+    except on e: exception do
+      ListEmptyFolders.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := ListEmptyFoldersAdvancedCustomDrawSubItem;
 end;
 
 end.
