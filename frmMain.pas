@@ -260,9 +260,11 @@ begin
         fileList.LoadFromFile(ListFiles.Items[i].Caption);
         previous := fileList.text;
         fileList.text := StringReplace(fileList.text, edtOldText.text, edtNewText.text, [rfReplaceAll, rfIgnoreCase]);
-        fileList.SaveToFile(ListFiles.Items[i].Caption);
         if previous <> fileList.text then
-          ListFiles.Items[i].SubItems.Add('Changed')
+        begin
+          fileList.SaveToFile(ListFiles.Items[i].Caption);
+          ListFiles.Items[i].SubItems.Add('Changed');
+        end
         else
           ListFiles.Items[i].SubItems.Add('Processed');
       finally

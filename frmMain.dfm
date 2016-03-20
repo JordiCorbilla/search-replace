@@ -3279,16 +3279,8 @@ object Form1: TForm1
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 694
-    ExplicitTop = 80
-    ExplicitWidth = 538
-    ExplicitHeight = 442
     object TabSheet1: TTabSheet
       Caption = 'Search/Replace'
-      ExplicitLeft = 12
-      ExplicitTop = 80
-      ExplicitWidth = 530
-      ExplicitHeight = 414
       object ListFiles: TListView
         Left = 361
         Top = 0
@@ -3307,10 +3299,6 @@ object Form1: TForm1
         TabOrder = 0
         ViewStyle = vsReport
         OnAdvancedCustomDrawSubItem = ListFilesAdvancedCustomDrawSubItem
-        ExplicitLeft = 640
-        ExplicitTop = 21
-        ExplicitWidth = 454
-        ExplicitHeight = 521
       end
       object Panel1: TPanel
         Left = 0
@@ -3319,7 +3307,6 @@ object Form1: TForm1
         Height = 542
         Align = alLeft
         TabOrder = 1
-        ExplicitHeight = 523
         object Label2: TLabel
           Left = 6
           Top = 3
@@ -3443,8 +3430,6 @@ object Form1: TForm1
     object Content: TTabSheet
       Caption = 'Empty Folders'
       ImageIndex = 1
-      ExplicitWidth = 923
-      ExplicitHeight = 566
       object Panel2: TPanel
         Left = 0
         Top = 0
@@ -3452,8 +3437,6 @@ object Form1: TForm1
         Height = 542
         Align = alLeft
         TabOrder = 0
-        ExplicitLeft = 8
-        ExplicitHeight = 523
         object Label6: TLabel
           Left = 6
           Top = 3
@@ -3543,15 +3526,11 @@ object Form1: TForm1
         TabOrder = 1
         ViewStyle = vsReport
         OnAdvancedCustomDrawSubItem = ListEmptyFoldersAdvancedCustomDrawSubItem
-        ExplicitLeft = 356
       end
     end
     object TabSheet2: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
-      ExplicitLeft = 100
-      ExplicitTop = 56
-      ExplicitHeight = 523
       object chkDetails: TCheckBox
         Left = 11
         Top = 16
@@ -3574,9 +3553,6 @@ object Form1: TForm1
     Color = 12477460
     ParentBackground = False
     TabOrder = 1
-    ExplicitLeft = 8
-    ExplicitTop = 8
-    ExplicitWidth = 671
     object mainMenu: TImage
       Left = 13
       Top = 10
@@ -3604,7 +3580,6 @@ object Form1: TForm1
     OpenedWidth = 200
     Placement = svpLeft
     TabOrder = 2
-    ExplicitHeight = 383
     object catMenuItems: TCategoryButtons
       Left = 0
       Top = -20
@@ -3668,7 +3643,7 @@ object Form1: TForm1
     Left = 80
     Top = 268
     Bitmap = {
-      494C01010400BC00D00020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010400BC00D40020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000004000000001002000000000000080
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
