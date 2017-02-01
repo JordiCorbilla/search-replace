@@ -3314,20 +3314,6 @@ object Form1: TForm1
           Height = 13
           Caption = 'Select Location Folder:'
         end
-        object Label4: TLabel
-          Left = 6
-          Top = 187
-          Width = 50
-          Height = 13
-          Caption = 'New Text:'
-        end
-        object Label3: TLabel
-          Left = 6
-          Top = 143
-          Width = 45
-          Height = 13
-          Caption = 'Old Text:'
-        end
         object Label1: TLabel
           Left = 6
           Top = 55
@@ -3342,36 +3328,13 @@ object Form1: TForm1
           Height = 13
           Caption = 'Number of files found: '
         end
-        object edtNewText: TEdit
-          Left = 6
-          Top = 206
-          Width = 321
-          Height = 21
-          TabOrder = 0
-        end
-        object edtOldText: TEdit
-          Left = 6
-          Top = 162
-          Width = 321
-          Height = 21
-          TabOrder = 1
-        end
-        object btnReplace: TButton
-          Left = 6
-          Top = 233
-          Width = 75
-          Height = 32
-          Caption = 'Replace'
-          TabOrder = 2
-          OnClick = btnReplaceClick
-        end
         object btnLocation: TButton
           Left = 327
           Top = 22
           Width = 23
           Height = 21
           Caption = '...'
-          TabOrder = 3
+          TabOrder = 0
           OnClick = btnLocationClick
         end
         object edtLocation: TEdit
@@ -3379,14 +3342,14 @@ object Form1: TForm1
           Top = 22
           Width = 321
           Height = 21
-          TabOrder = 4
+          TabOrder = 1
         end
         object edtExtension: TEdit
           Left = 105
           Top = 52
           Width = 120
           Height = 21
-          TabOrder = 5
+          TabOrder = 2
           Text = '*.*'
         end
         object btnSearch: TButton
@@ -3395,14 +3358,8 @@ object Form1: TForm1
           Width = 75
           Height = 32
           Caption = 'Search'
-          TabOrder = 6
+          TabOrder = 3
           OnClick = btnSearchClick
-        end
-        object ActivityIndicator1: TActivityIndicator
-          Left = 82
-          Top = 233
-          IndicatorColor = aicWhite
-          IndicatorType = aitSectorRing
         end
         object ActivityIndicator2: TActivityIndicator
           Left = 82
@@ -3412,18 +3369,120 @@ object Form1: TForm1
         end
         object btnDeleteFiles: TButton
           Left = 6
-          Top = 305
+          Top = 452
           Width = 75
           Height = 32
           Caption = 'Delete Files'
-          TabOrder = 9
+          TabOrder = 5
           OnClick = btnDeleteFilesClick
         end
         object ActivityIndicator4: TActivityIndicator
           Left = 82
-          Top = 305
+          Top = 452
           IndicatorColor = aicWhite
           IndicatorType = aitSectorRing
+        end
+        object GroupBox1: TGroupBox
+          Left = 2
+          Top = 122
+          Width = 335
+          Height = 159
+          Caption = 'File Content'
+          TabOrder = 7
+          object Label3: TLabel
+            Left = 3
+            Top = 23
+            Width = 45
+            Height = 13
+            Caption = 'Old Text:'
+          end
+          object Label4: TLabel
+            Left = 3
+            Top = 69
+            Width = 50
+            Height = 13
+            Caption = 'New Text:'
+          end
+          object edtOldText: TEdit
+            Left = 3
+            Top = 42
+            Width = 321
+            Height = 21
+            TabOrder = 0
+          end
+          object edtNewText: TEdit
+            Left = 3
+            Top = 88
+            Width = 321
+            Height = 21
+            TabOrder = 1
+          end
+          object btnReplace: TButton
+            Left = 3
+            Top = 115
+            Width = 75
+            Height = 32
+            Caption = 'Replace'
+            TabOrder = 2
+            OnClick = btnReplaceClick
+          end
+          object ActivityIndicator1: TActivityIndicator
+            Left = 80
+            Top = 115
+            IndicatorColor = aicWhite
+            IndicatorType = aitSectorRing
+          end
+        end
+        object GroupBox2: TGroupBox
+          Left = 2
+          Top = 287
+          Width = 335
+          Height = 159
+          Caption = 'File Name'
+          TabOrder = 8
+          object Label9: TLabel
+            Left = 3
+            Top = 23
+            Width = 50
+            Height = 13
+            Caption = 'Old Name:'
+          end
+          object Label10: TLabel
+            Left = 3
+            Top = 69
+            Width = 55
+            Height = 13
+            Caption = 'New Name:'
+          end
+          object edtOldFileName: TEdit
+            Left = 3
+            Top = 42
+            Width = 321
+            Height = 21
+            TabOrder = 0
+          end
+          object edtNewFileName: TEdit
+            Left = 3
+            Top = 88
+            Width = 321
+            Height = 21
+            TabOrder = 1
+          end
+          object btnReplaceFile: TButton
+            Left = 3
+            Top = 115
+            Width = 75
+            Height = 32
+            Caption = 'Replace'
+            TabOrder = 2
+            OnClick = btnReplaceFileClick
+          end
+          object ActivityIndicator5: TActivityIndicator
+            Left = 80
+            Top = 115
+            IndicatorColor = aicWhite
+            IndicatorType = aitSectorRing
+          end
         end
       end
     end
@@ -3643,7 +3702,7 @@ object Form1: TForm1
     Left = 80
     Top = 268
     Bitmap = {
-      494C01010400BC00D40020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010400BC00D80020002000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000004000000001002000000000000080
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

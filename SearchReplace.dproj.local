@@ -2,11 +2,11 @@
 <BorlandProject>
 	<Transactions>
     <Transaction>2016/03/18 22:11:26.000.599,=C:\Users\jordi coll\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2016/03/18 22:11:58.000.301,C:\Users\jordi coll\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Desk\Source code\search-replace\trunk\frmMain.pas</Transaction>
-    <Transaction>2016/03/18 22:11:58.000.301,C:\Users\jordi coll\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Desk\Source code\search-replace\trunk\frmMain.dfm</Transaction>
-    <Transaction>2016/03/18 22:12:06.000.432,C:\Users\jordi coll\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Desk\Source code\search-replace\trunk\SearchReplace.dproj</Transaction>
+    <Transaction>2016/03/18 22:11:58.000.301,C:\Desk\Source code\search-replace\trunk\frmMain.dfm=C:\Users\jordi coll\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2016/03/18 22:11:58.000.301,C:\Desk\Source code\search-replace\trunk\frmMain.pas=C:\Users\jordi coll\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2016/03/18 22:12:06.000.432,C:\Desk\Source code\search-replace\trunk\SearchReplace.dproj=C:\Users\jordi coll\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
     <Transaction>2016/03/18 22:24:29.000.309,=C:\Desk\Source code\search-replace\trunk\flickr.lib.folder.pas</Transaction>
-    <Transaction>2016/03/19 11:43:45.641,=C:\Desk\Source code\search-replace\trunk\Unit1.pas</Transaction>
-    <Transaction>2016/03/19 11:44:28.626,C:\Desk\Source code\search-replace\trunk\thundax.lib.settings.pas=C:\Desk\Source code\search-replace\trunk\Unit1.pas</Transaction>
+    <Transaction>2016/03/19 11:43:45.000.641,=C:\Desk\Source code\search-replace\trunk\Unit1.pas</Transaction>
+    <Transaction>2016/03/19 11:44:28.000.626,C:\Desk\Source code\search-replace\trunk\Unit1.pas=C:\Desk\Source code\search-replace\trunk\thundax.lib.settings.pas</Transaction>
   </Transactions>
 </BorlandProject>

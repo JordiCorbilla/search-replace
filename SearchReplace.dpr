@@ -5,8 +5,7 @@ uses
   frmMain in 'frmMain.pas' {Form1},
   Vcl.Themes,
   Vcl.Styles,
-  flickr.lib.folder in 'flickr.lib.folder.pas',
-  thundax.lib.settings in 'thundax.lib.settings.pas';
+  flickr.lib.folder in 'flickr.lib.folder.pas';
 
 {$R *.res}
 

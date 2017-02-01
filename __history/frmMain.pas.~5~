@@ -1,0 +1,481 @@
+// Copyright (c) 2016, Jordi Corbilla
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// - Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
+// - Redistributions in binary form must reproduce the above copyright notice,
+// this list of conditions and the following disclaimer in the documentation
+// and/or other materials provided with the distribution.
+// - Neither the name of this library nor the names of its contributors may be
+// used to endorse or promote products derived from this software without
+// specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+unit frmMain;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.StdCtrls,
+  Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.CategoryButtons, System.Actions,
+  Vcl.ActnList, Vcl.WinXCtrls, System.ImageList, Vcl.ImgList, System.UITypes;
+
+type
+  TForm1 = class(TForm)
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    Content: TTabSheet;
+    ListFiles: TListView;
+    pnlToolbar: TPanel;
+    mainMenu: TImage;
+    splitview: TSplitView;
+    ActionList1: TActionList;
+    actSearchReplace: TAction;
+    actSearchEmpty: TAction;
+    actSettings: TAction;
+    catMenuItems: TCategoryButtons;
+    imgMenu: TImageList;
+    Panel1: TPanel;
+    TabSheet2: TTabSheet;
+    Label2: TLabel;
+    btnLocation: TButton;
+    edtLocation: TEdit;
+    edtExtension: TEdit;
+    btnSearch: TButton;
+    Label1: TLabel;
+    Panel2: TPanel;
+    Label6: TLabel;
+    btnDeleteFolder: TButton;
+    btnLocateFolder: TButton;
+    edtFolder: TEdit;
+    btnSearchEmpty: TButton;
+    ListEmptyFolders: TListView;
+    btnPopulateFolder: TButton;
+    Label7: TLabel;
+    chkDetails: TCheckBox;
+    Label5: TLabel;
+    ActivityIndicator2: TActivityIndicator;
+    ActivityIndicator3: TActivityIndicator;
+    Label8: TLabel;
+    btnDeleteFiles: TButton;
+    ActivityIndicator4: TActivityIndicator;
+    GroupBox1: TGroupBox;
+    Label3: TLabel;
+    edtOldText: TEdit;
+    Label4: TLabel;
+    edtNewText: TEdit;
+    btnReplace: TButton;
+    ActivityIndicator1: TActivityIndicator;
+    GroupBox2: TGroupBox;
+    Label9: TLabel;
+    Label10: TLabel;
+    edtOldFileName: TEdit;
+    edtNewFileName: TEdit;
+    btnReplaceFile: TButton;
+    ActivityIndicator5: TActivityIndicator;
+    procedure btnLocationClick(Sender: TObject);
+    procedure btnSearchClick(Sender: TObject);
+    procedure btnReplaceClick(Sender: TObject);
+    procedure mainMenuClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure actSearchReplaceExecute(Sender: TObject);
+    procedure actSearchEmptyExecute(Sender: TObject);
+    procedure actSettingsExecute(Sender: TObject);
+    procedure btnLocateFolderClick(Sender: TObject);
+    procedure btnSearchEmptyClick(Sender: TObject);
+    procedure ListFilesAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+    procedure btnDeleteFolderClick(Sender: TObject);
+    procedure ListEmptyFoldersAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+    procedure btnPopulateFolderClick(Sender: TObject);
+    procedure btnDeleteFilesClick(Sender: TObject);
+    procedure btnReplaceFileClick(Sender: TObject);
+  private
+    procedure SearchAllFilesUnderDirectory(const Folder: string);
+    procedure SearchEmptyFoldersUnderDirectory(const Folder: string);
+    function IsDirectoryEmpty(const directory: string): boolean;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+uses
+  flickr.lib.Folder;
+
+{$R *.dfm}
+
+procedure TForm1.SearchAllFilesUnderDirectory(const Folder: string);
+var
+  searchRecord: TSearchRec;
+  item: TListItem;
+begin
+  if FindFirst(IncludeTrailingPathDelimiter(Folder) + edtExtension.text, faAnyFile or faDirectory, searchRecord) = 0 then
+    try
+      repeat
+      begin
+        Application.ProcessMessages;
+        if (searchRecord.Attr and faDirectory) = 0 then
+        begin
+          item := ListFiles.Items.Add;
+          item.Caption := (IncludeTrailingPathDelimiter(Folder) + searchRecord.Name)
+        end
+        else if (searchRecord.Name <> '.') and (searchRecord.Name <> '..') then
+          SearchAllFilesUnderDirectory(IncludeTrailingPathDelimiter(Folder) + searchRecord.Name);
+      end;
+      until FindNext(searchRecord) <> 0;
+    finally
+      FindClose(searchRecord);
+    end;
+end;
+
+procedure TForm1.SearchEmptyFoldersUnderDirectory(const Folder: string);
+var
+  findData: TWin32FindData;
+  handle: THandle;
+  fileName: string;
+  item: TListItem;
+begin
+  fileName := IncludeTrailingPathDelimiter(Folder);
+  handle := FindFirstFile(PChar(fileName + '*.*'), findData);
+  if handle <> INVALID_HANDLE_VALUE then
+    try
+      repeat
+      begin
+        application.ProcessMessages;
+        if (findData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY > 0) and (Pos(findData.cFileName, '.;..') = 0) then
+        begin
+          if IsDirectoryEmpty(fileName + findData.cFileName) then
+          begin
+            item := ListEmptyFolders.Items.Add;
+            item.Caption := (fileName + findData.cFileName);
+          end;
+          SearchEmptyFoldersUnderDirectory(fileName + findData.cFileName);
+        end;
+      end;
+      until not FindNextFile(handle, findData);
+    finally
+      Winapi.Windows.FindClose(handle);
+    end;
+end;
+
+function TForm1.IsDirectoryEmpty(const directory: string): boolean;
+var
+  searchRec: TSearchRec;
+begin
+  try
+    result := (FindFirst(directory + '\*.*', faAnyFile, searchRec) = 0) AND (FindNext(searchRec) = 0) AND (FindNext(searchRec) <> 0);
+  finally
+    FindClose(searchRec);
+  end;
+end;
+
+procedure TForm1.ListEmptyFoldersAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+var
+  color, Color2: TColor;
+begin
+  color := Sender.Canvas.Font.color;
+  Color2 := Sender.Canvas.Brush.color;
+  if SubItem = 1 then
+  begin
+    if Item.SubItems.Count > 0 then
+    begin
+      if (Item.SubItems.Strings[0] = 'Deleted') or (Item.SubItems.Strings[0] = 'Populated') then
+      begin
+        Sender.Canvas.Font.color := clGreen;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+      if (Item.SubItems.Strings[0].Contains('Error')) then
+      begin
+        Sender.Canvas.Font.color := clRed;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+    end;
+  end
+  else
+  begin
+    Sender.Canvas.Font.color := color;
+    Sender.Canvas.Brush.color := Color2;
+  end;
+end;
+
+procedure TForm1.ListFilesAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+var
+  color, Color2: TColor;
+begin
+  color := Sender.Canvas.Font.color;
+  Color2 := Sender.Canvas.Brush.color;
+  if SubItem = 1 then
+  begin
+    if Item.SubItems.Count > 0 then
+    begin
+      if (Item.SubItems.Strings[0] = 'Changed') or (Item.SubItems.Strings[0] = 'Deleted') then
+      begin
+        Sender.Canvas.Font.color := clGreen;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+      if (Item.SubItems.Strings[0] = 'Processed') then
+      begin
+        Sender.Canvas.Font.color := clBlue;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+      if (Item.SubItems.Strings[0].Contains('Error')) then
+      begin
+        Sender.Canvas.Font.color := clRed;
+        Sender.Canvas.Brush.color := Color2;
+      end;
+    end;
+  end
+  else
+  begin
+    Sender.Canvas.Font.color := color;
+    Sender.Canvas.Brush.color := Color2;
+  end;
+end;
+
+procedure TForm1.btnReplaceClick(Sender: TObject);
+var
+  fileList: TStringlist;
+  i: Integer;
+  previous : string;
+begin
+  ActivityIndicator1.Animate := true;
+  ListFiles.OnAdvancedCustomDrawSubItem := nil;
+  application.ProcessMessages;
+  for i := 0 to ListFiles.Items.Count - 1 do
+  begin
+    fileList := TStringlist.Create;
+    try
+      try
+        application.ProcessMessages;
+        fileList.LoadFromFile(ListFiles.Items[i].Caption);
+        previous := fileList.text;
+        fileList.text := StringReplace(fileList.text, edtOldText.text, edtNewText.text, [rfReplaceAll, rfIgnoreCase]);
+        if previous <> fileList.text then
+        begin
+          fileList.SaveToFile(ListFiles.Items[i].Caption);
+          ListFiles.Items[i].SubItems.Add('Changed');
+        end
+        else
+          ListFiles.Items[i].SubItems.Add('Processed');
+      finally
+        fileList.Free;
+      end;
+    except
+      on e: exception do
+        ListFiles.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListFiles.OnAdvancedCustomDrawSubItem := ListFilesAdvancedCustomDrawSubItem;
+  ActivityIndicator1.Animate := false;
+  showMessage('Operation completed!');
+end;
+
+procedure TForm1.btnReplaceFileClick(Sender: TObject);
+var
+  fileList: TStringlist;
+  i: Integer;
+  previous : string;
+  oldFileName : string;
+begin
+//replace filename
+  ActivityIndicator5.Animate := true;
+  ListFiles.OnAdvancedCustomDrawSubItem := nil;
+  application.ProcessMessages;
+  for i := 0 to ListFiles.Items.Count - 1 do
+    begin
+    fileList := TStringlist.Create;
+    try
+      try
+        application.ProcessMessages;
+        oldFileName = ListFiles.Items[i].Caption;
+        fileList.LoadFromFile(ListFiles.Items[i].Caption);
+        previous := fileList.text;
+        fileList.text := StringReplace(fileList.text, edtOldText.text, edtNewText.text, [rfReplaceAll, rfIgnoreCase]);
+        if previous <> fileList.text then
+        begin
+          fileList.SaveToFile(ListFiles.Items[i].Caption);
+          ListFiles.Items[i].SubItems.Add('Changed');
+        end
+        else
+          ListFiles.Items[i].SubItems.Add('Processed');
+      finally
+        fileList.Free;
+      end;
+    except
+      on e: exception do
+        ListFiles.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListFiles.OnAdvancedCustomDrawSubItem := ListFilesAdvancedCustomDrawSubItem;
+  ActivityIndicator5.Animate := false;
+  showMessage('Operation completed!');
+end;
+
+procedure TForm1.btnSearchClick(Sender: TObject);
+begin
+  if edtLocation.text = '' then
+  begin
+    showMessage('Location folder cannot be empty!');
+    exit;
+  end;
+  if edtExtension.text = '' then
+  begin
+    showMessage('Extension cannot be empty!');
+    exit;
+  end;
+  ListFiles.OnAdvancedCustomDrawSubItem := nil;
+  ListFiles.Clear;
+  ActivityIndicator2.Animate := true;
+  Application.ProcessMessages;
+  SearchAllFilesUnderDirectory(edtLocation.text);
+  label5.Caption := 'Number of files found: ' + ListFiles.Items.Count.ToString;
+  ActivityIndicator2.Animate := false;
+  ListFiles.OnAdvancedCustomDrawSubItem := ListFilesAdvancedCustomDrawSubItem;
+  showMessage('Operation completed!');
+end;
+
+procedure TForm1.btnSearchEmptyClick(Sender: TObject);
+begin
+  if edtFolder.text = '' then
+  begin
+    showMessage('Location folder cannot be empty!');
+    exit;
+  end;
+  ActivityIndicator3.Animate := true;
+  application.ProcessMessages;
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := nil;
+  ListEmptyFolders.Clear;
+  SearchEmptyFoldersUnderDirectory(edtFolder.text);
+  ActivityIndicator3.Animate := false;
+  label8.Caption := 'Number of files found: ' + ListEmptyFolders.Items.Count.ToString;
+  showMessage('Operation completed!');
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := ListEmptyFoldersAdvancedCustomDrawSubItem;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  PageControl1.TabIndex := 0;
+  splitview.Close;
+end;
+
+procedure TForm1.mainMenuClick(Sender: TObject);
+begin
+  if splitview.Opened then
+    splitview.Close
+  else
+    splitview.Open;
+end;
+
+procedure TForm1.actSearchEmptyExecute(Sender: TObject);
+begin
+  PageControl1.TabIndex := 1;
+end;
+
+procedure TForm1.actSearchReplaceExecute(Sender: TObject);
+begin
+  PageControl1.TabIndex := 0;
+end;
+
+procedure TForm1.actSettingsExecute(Sender: TObject);
+begin
+  PageControl1.TabIndex := 2;
+end;
+
+procedure TForm1.btnDeleteFilesClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  ActivityIndicator4.Animate := true;
+  ListFiles.OnAdvancedCustomDrawSubItem := nil;
+  application.ProcessMessages;
+  for i := 0 to ListFiles.Items.Count - 1 do
+  begin
+    try
+      application.ProcessMessages;
+      if DeleteFile(ListFiles.Items[i].Caption) then
+        ListFiles.Items[i].SubItems.Add('Deleted')
+      else
+        ListFiles.Items[i].SubItems.Add('Processed');
+    except
+      on e: exception do
+        ListFiles.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListFiles.OnAdvancedCustomDrawSubItem := ListFilesAdvancedCustomDrawSubItem;
+  ActivityIndicator4.Animate := false;
+  showMessage('Operation completed!');
+end;
+
+procedure TForm1.btnDeleteFolderClick(Sender: TObject);
+var
+  i : integer;
+begin
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := nil;
+  for i := 0 to ListEmptyFolders.Items.Count - 1 do
+  begin
+    try
+      if RemoveDir(ListEmptyFolders.Items[i].Caption) then
+      begin
+        ListEmptyFolders.Items[i].SubItems.Add('Deleted')
+      end;
+    except on e: exception do
+      ListEmptyFolders.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := ListEmptyFoldersAdvancedCustomDrawSubItem;
+end;
+
+procedure TForm1.btnLocateFolderClick(Sender: TObject);
+begin
+  edtFolder.text := TFolder.BrowseForFolder;
+end;
+
+procedure TForm1.btnLocationClick(Sender: TObject);
+begin
+  edtLocation.text := TFolder.BrowseForFolder;
+end;
+
+procedure TForm1.btnPopulateFolderClick(Sender: TObject);
+var
+  i : integer;
+  emptyFile : TStringList;
+begin
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := nil;
+  for i := 0 to ListEmptyFolders.Items.Count - 1 do
+  begin
+    try
+      emptyFile := TStringList.Create;
+      try
+        emptyFile.Add('This is an empty file created by a machine!');
+        emptyFile.SaveToFile(IncludeTrailingPathDelimiter(ListEmptyFolders.Items[i].Caption) + '_empty.txt');
+        ListEmptyFolders.Items[i].SubItems.Add('Populated');
+      finally
+        emptyFile.Free;
+      end;
+    except on e: exception do
+      ListEmptyFolders.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListEmptyFolders.OnAdvancedCustomDrawSubItem := ListEmptyFoldersAdvancedCustomDrawSubItem;
+end;
+
+end.

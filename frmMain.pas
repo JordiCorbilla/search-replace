@@ -53,15 +53,10 @@ type
     Panel1: TPanel;
     TabSheet2: TTabSheet;
     Label2: TLabel;
-    edtNewText: TEdit;
-    edtOldText: TEdit;
-    btnReplace: TButton;
     btnLocation: TButton;
     edtLocation: TEdit;
     edtExtension: TEdit;
     btnSearch: TButton;
-    Label4: TLabel;
-    Label3: TLabel;
     Label1: TLabel;
     Panel2: TPanel;
     Label6: TLabel;
@@ -74,12 +69,25 @@ type
     Label7: TLabel;
     chkDetails: TCheckBox;
     Label5: TLabel;
-    ActivityIndicator1: TActivityIndicator;
     ActivityIndicator2: TActivityIndicator;
     ActivityIndicator3: TActivityIndicator;
     Label8: TLabel;
     btnDeleteFiles: TButton;
     ActivityIndicator4: TActivityIndicator;
+    GroupBox1: TGroupBox;
+    Label3: TLabel;
+    edtOldText: TEdit;
+    Label4: TLabel;
+    edtNewText: TEdit;
+    btnReplace: TButton;
+    ActivityIndicator1: TActivityIndicator;
+    GroupBox2: TGroupBox;
+    Label9: TLabel;
+    Label10: TLabel;
+    edtOldFileName: TEdit;
+    edtNewFileName: TEdit;
+    btnReplaceFile: TButton;
+    ActivityIndicator5: TActivityIndicator;
     procedure btnLocationClick(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
     procedure btnReplaceClick(Sender: TObject);
@@ -95,6 +103,7 @@ type
     procedure ListEmptyFoldersAdvancedCustomDrawSubItem(Sender: TCustomListView; Item: TListItem; SubItem: Integer; State: TCustomDrawState; Stage: TCustomDrawStage; var DefaultDraw: Boolean);
     procedure btnPopulateFolderClick(Sender: TObject);
     procedure btnDeleteFilesClick(Sender: TObject);
+    procedure btnReplaceFileClick(Sender: TObject);
   private
     procedure SearchAllFilesUnderDirectory(const Folder: string);
     procedure SearchEmptyFoldersUnderDirectory(const Folder: string);
@@ -277,6 +286,47 @@ begin
   end;
   ListFiles.OnAdvancedCustomDrawSubItem := ListFilesAdvancedCustomDrawSubItem;
   ActivityIndicator1.Animate := false;
+  showMessage('Operation completed!');
+end;
+
+procedure TForm1.btnReplaceFileClick(Sender: TObject);
+var
+  fileList: TStringlist;
+  i: Integer;
+  oldFileName : string;
+  path, fileName, newFileName : string;
+begin
+//replace filename
+  ActivityIndicator5.Animate := true;
+  ListFiles.OnAdvancedCustomDrawSubItem := nil;
+  application.ProcessMessages;
+  for i := 0 to ListFiles.Items.Count - 1 do
+    begin
+    fileList := TStringlist.Create;
+    try
+      try
+        application.ProcessMessages;
+        oldFileName := ListFiles.Items[i].Caption;
+        path := ExtractFilePath(oldFileName);
+        fileName := extractfilename(oldFileName);
+        newFileName := StringReplace(fileName, edtOldFileName.text, edtNewFileName.text, [rfReplaceAll, rfIgnoreCase]);
+        if fileName <> newFileName then
+        begin
+          RenameFile(path + '' + fileName, path + '' + newFileName);
+          ListFiles.Items[i].SubItems.Add('Changed');
+        end
+        else
+          ListFiles.Items[i].SubItems.Add('Processed');
+      finally
+        fileList.Free;
+      end;
+    except
+      on e: exception do
+        ListFiles.Items[i].SubItems.Add('Error ' + e.Message);
+    end;
+  end;
+  ListFiles.OnAdvancedCustomDrawSubItem := ListFilesAdvancedCustomDrawSubItem;
+  ActivityIndicator5.Animate := false;
   showMessage('Operation completed!');
 end;
 
